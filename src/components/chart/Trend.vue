@@ -46,7 +46,7 @@ export default {
       rate: this.percent
     }
   },
-  created () {
+  beforeUpdate () {
     this.trend = this.caulateTrend()
     this.rate = this.caulateRate()
   },

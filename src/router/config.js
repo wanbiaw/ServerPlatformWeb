@@ -27,12 +27,12 @@ const options = {
       redirect: '/login',
       children: [
         {
-          path: 'demo',
-          name: '演示页',
+          path: 'dashboard',
+          name: '数据看板',
           meta: {
             icon: 'file-ppt'
           },
-          component: () => import('@/pages/demo')
+          component: () => import('@/pages/dashboard')
         },
         {
           path: 'parent1',
@@ -45,7 +45,7 @@ const options = {
             {
               path: 'demo1',
               name: '演示页面1',
-              component: () => import('@/pages/demo'),
+              component: () => import('@/pages/device'),
             }
           ]
         },
@@ -55,12 +55,12 @@ const options = {
           meta: {
             icon: 'form'
           },
-          component: PageView,
+          component: BlankView,
           children: [
             {
               path: 'demo2',
               name: '演示页面2',
-              component: () => import('@/pages/demo'),
+              component: () => import('@/pages/device'),
             }
           ]
         },
@@ -70,7 +70,7 @@ const options = {
           meta: {
             icon: 'warning',
           },
-          component: BlankView,
+          component: PageView,
           children: [
             {
               path: '404',
@@ -91,14 +91,14 @@ const options = {
         },
         {
           name: '验权页面',
-          path: 'auth/demo',
+          path: 'auth/device',
           meta: {
             icon: 'file-ppt',
             authority: {
               permission: 'form',
               role: 'manager'
             },
-            component: () => import('@/pages/demo')
+            component: () => import('@/pages/device')
           }
         }
       ]

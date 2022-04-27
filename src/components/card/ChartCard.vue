@@ -7,7 +7,7 @@
         <slot name="action"></slot>
       </span>
       </div>
-      <div class="total"><span>{{total}}</span></div>
+      <div><span class="total">{{total}}</span><span>{{trendReq}}</span></div>
     </div>
     <div class="chart-card-content">
       <div class="content-fix">
@@ -23,7 +23,44 @@
 <script>
 export default {
   name: 'ChartCard',
-  props: ['title', 'total', 'loading']
+  props: {
+    title: {
+      type: String,
+      required: true
+    },
+    loading: {
+      type: String,
+      required: true
+    },
+    total: {
+      type: Number,
+      required: false,
+      default: 0
+    },
+    trendReq: {
+      type: Number,
+      required: false,
+      default: 0
+    }
+  },
+  data () {
+    return {
+      Total:this.total,
+      TransReq:this.trendReq
+    }
+  },
+  beforeUpdate(){
+    this.Total = this.transformTotal;
+    this.TransReq = this.transformTransReq()
+  },
+  methods:{
+    transformTotal () {
+
+    },
+    transformTransReq (){
+
+    }
+  }
 }
 </script>
 
@@ -66,7 +103,7 @@ export default {
   .chart-card-content{
     margin-bottom: 12px;
     position: relative;
-    height: 46px;
+    height: 120px;
     width: 100%;
   }
   .chart-card-content .content-fix{
