@@ -26,5 +26,6 @@ new Vue({
   router,
   store,
   i18n,
+  aa:11,
   render: h => h(App),
 }).$mount('#app')

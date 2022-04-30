@@ -7,7 +7,10 @@
         <slot name="action"></slot>
       </span>
       </div>
-      <div><span class="total">{{total}}</span><span>{{trendReq}}</span></div>
+      <div>
+        <span class="total">{{Total}}</span>
+        <span :class="['chart-trend-icon', trend]">{{TrendReq}}<a-icon :type="'arrow-' + trend" /></span>
+      </div>
     </div>
     <div class="chart-card-content">
       <div class="content-fix">
@@ -29,7 +32,7 @@ export default {
       required: true
     },
     loading: {
-      type: String,
+      type: Boolean,
       required: true
     },
     total: {
@@ -41,24 +44,37 @@ export default {
       type: Number,
       required: false,
       default: 0
+    },
+    define_total:{
+      type: String,
+      required: false,
+      default: null
+    },
+    define_trend:{
+      type: String,
+      required: false,
+      default: null
+    },
+    scale: {
+      type: Number,
+      required: false,
+      default: 1
     }
   },
   data () {
     return {
       Total:this.total,
-      TransReq:this.trendReq
+      TrendReq:this.trendReq,
+      trend: this.trendReq >= 0 ? 'up' : 'down'
     }
   },
-  beforeUpdate(){
-    this.Total = this.transformTotal;
-    this.TransReq = this.transformTransReq()
+  created(){
+    this.Total = this.transform(this.Total,this.define_total)
+    this.TrendReq = this.transform(this.TrendReq,this.define_trend);
   },
   methods:{
-    transformTotal () {
-
-    },
-    transformTransReq (){
-
+    transform (temp, define) {
+      return define === null ? (temp/10000).toFixed(this.scale).toString() : define
     }
   }
 }
@@ -106,10 +122,21 @@ export default {
     height: 120px;
     width: 100%;
   }
-  .chart-card-content .content-fix{
+  .chart-card-content .content-fix {
     position: absolute;
     left: 0;
     bottom: 0;
     width: 100%;
+  }
+  .chart-trend-icon {
+    margin-left: 10px;
+    font-size: 15px;
+    &.up {
+      color: @red-6;
+    }
+
+    &.down {
+      color: @green-6;
+    }
   }
 </style>

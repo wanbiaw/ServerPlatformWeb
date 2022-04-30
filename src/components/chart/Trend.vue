@@ -1,7 +1,7 @@
 <template>
   <div class="chart-trend">
     {{term}}
-    <span>{{rate}}%</span>
+    <span>{{rate}}</span>
     <span :class="['chart-trend-icon', trend]" style=""><a-icon :type="'caret-' + trend" /></span>
   </div>
 </template>
@@ -29,8 +29,8 @@ export default {
       required: false,
       default: null
     },
-    percent: {
-      type: Number,
+    define: {
+      type: String,
       required: false,
       default: null
     },
@@ -43,18 +43,18 @@ export default {
   data () {
     return {
       trend: this.isIncrease ? 'up' : 'down',
-      rate: this.percent
+      rate: this.define
     }
   },
-  beforeUpdate () {
-    this.trend = this.caulateTrend()
-    this.rate = this.caulateRate()
+  created () {
+    this.trend = this.calculateTrend()
+    this.rate = this.calculateRate()
   },
   methods: {
-    caulateRate () {
-      return (this.percent === null ? Math.abs(this.value - this.target) * 100 / this.target : this.percent).toFixed(this.scale)
+    calculateRate () {
+      return this.define === null ? (Math.abs(this.value - this.target) * 100 / this.target).toFixed(this.scale).toString() : this.define
     },
-    caulateTrend () {
+    calculateTrend () {
       let isIncrease = this.isIncrease === null ? this.value >= this.target : this.isIncrease
       return isIncrease ? 'up' : 'down'
     }
