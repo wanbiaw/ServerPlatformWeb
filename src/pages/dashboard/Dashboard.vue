@@ -122,18 +122,9 @@
                 </chart-card>
             </a-col>
         </a-row>
-        <a-row style="margin-top: 20px">
-            <a-col class="ant-col">
-                <div class="classify-ring">
-                    <ve-ring
-                            class="ring"
-                            :data="chartData"
-                            width="360px"
-                            height="160px"
-                            :settings="this.chartSettings"
-                            :extend="chartExtend"
-                    ></ve-ring>
-                </div>
+        <a-row style="margin-top: -10px" :gutter="[24, 24]">
+            <a-col class="ant-col" :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
+                <div id="chart" style="width: 100%;height: 200%"></div>
             </a-col>
         </a-row>
     </div>
@@ -142,50 +133,24 @@
 <script>
     import ChartCard from '@/components/card/ChartCard'
     import Trend from '@/components/chart/Trend'
-    import VeRing from 'v-charts/lib/ring.common'
+    import * as charts from 'echarts'
     export default {
         name: "Dashboard",
         i18n: require('./i18n'),
         components:{
             ChartCard,
-            Trend,
-            VeRing
+            Trend
         },
         mounted(){
             this.drawCharts()
         },
         data () {
-            this.chartSettings = {
-                dimension: 'name',
-                metrics: 'value',
-                radius: [
-                    '35', '50'
-                ],
-                offsetY: 80,
-                labelLine: {
-                    normal: {
-                        lineStyle: {
-                            color: '#fff'
-                        }
-                    }
-                },
-                label: {
-                    normal: {
-                        formatter: '{b}: {d}%',
-                        padding: [0, -10]
-                    }
-                }
-            }
             return {
-                chartExtend: {
-                    legend: {
-                        show: false
-                    }
-                },
                 disabled:true,
                 loading: false,
                 env: "all",
                 transRate: "down",
+                charData:"80%",
                 ReqInfo:{
                     totalReq:"345.1w",
                     trendReq:"-15.7w",
@@ -225,12 +190,135 @@
             }
         },
         methods:{
-            drawCharts(){
-                // let chart = echarts.init(document.getElementById('charts'))
-                //
-                // chart.setOption(option)
-            },
+            drawCharts() {
+                let chart = charts.init(document.getElementById('chart'));
+                var data = [
+                    {
+                        name: '架构链路覆盖率',
+                        value: 0,
+                        num: 0 + '⇾' + 0,
+                    },
+                    {
+                        name: '垂域覆盖率(核心设备)',
+                        value: 0,
+                        num: 0 + '⇾' + 0,
+                    },
+                    {
+                        name: '依赖服务覆盖率',
+                        value: 0,
+                        num: 0 + '⇾' + 0,
+                    },
+                    {
+                        name: '项目测试覆盖率',
+                        value: 0,
+                        num: 0 + '⇾' + 0,
+                    },
+                    {
+                        name: '监控误报率',
+                        value: 0,
+                        num: 0 + '%' + '⇾' + 0 + '%',
+                    }
+                ];
 
+
+                var titleArr = [],
+                    seriesArr = [];
+                let colors = [
+                    ['#5B8FF9', '#E9EEF4'],
+                    ['#5AD8A6', '#E9EEF4'],
+                    ['#FFFF80', '#E9EEF4'],
+                    ['#E86452', '#E9EEF4'],
+                    ['#CC00CC', '#E9EEF4'],
+                ];
+                data.forEach(function (item, index) {
+                    titleArr.push(
+                        {
+                            text: item.name,
+                            left: index * 15+ 10 + '%',
+                            top: '75%',
+                            textAlign: 'center',
+                            textStyle: {
+                                fontWeight: 'lighter',
+                                fontSize: '15',
+                                color: '#fff',
+                                textAlign: 'center',
+                            },
+                        }
+                        , {
+                            text: item.num,
+                            left: index * 15 + 10 + '%',
+                            top: '85%',
+                            textAlign: 'center',
+                            textStyle: {
+                                fontWeight: '800',
+                                fontSize: '12',
+                                color: 'dodgerblue',
+                                textAlign: 'center',
+                            },
+                        });
+                    seriesArr.push({
+                        name: item.name,
+                        type: 'pie',
+                        clockWise: false,
+                        radius: [55, 60],
+                        itemStyle: {
+                            normal: {
+                                color: colors[index][0],
+                                shadowColor: colors[index][0],
+                                shadowBlur: 0,
+                                label: {
+                                    show: false,
+                                },
+                                labelLine: {
+                                    show: false,
+                                },
+                            },
+                        },
+                        hoverAnimation: false,
+                        center: [index * 15 + 10 + '%', '40%'],
+                        data: [
+                            {
+                                value: item.value,
+                                label: {
+                                    normal: {
+                                        formatter: function (params) {
+                                            return params.value + '%';
+                                        },
+                                        position: 'center',
+                                        show: true,
+                                        textStyle: {
+                                            fontSize: '20',
+                                            fontWeight: 'bold',
+                                            color: '#333',
+                                        },
+                                    },
+                                },
+                            },
+                            {
+                                value: 100 - item.value,
+                                name: 'invisible',
+                                itemStyle: {
+                                    normal: {
+                                        color: colors[index][1],
+                                    },
+                                    emphasis: {
+                                        color: colors[index][1],
+                                    },
+                                },
+                            },
+                        ],
+                    });
+                });
+
+                let option = {
+                    backgroundColor: '#111',
+                    title: titleArr,
+                    series: seriesArr,
+                };
+
+                chart.hideLoading();
+                chart.setOption(option);
+            },
             handleChange1(){
 
             },
@@ -263,5 +351,12 @@
     }
     .ant-col-5{
         width:20%
+    }
+    #chart-panel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
     }
 </style>
