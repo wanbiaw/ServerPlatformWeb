@@ -11,13 +11,13 @@
               </a-menu>
               <a-button style="margin-left: 2px"> 添加菜单 <a-icon type="down" /> </a-button>
             </a-dropdown>
-            <a-button style="margin-left: 2px" @click="handle2"> 收起全部菜单 </a-button>
+            <a-button style="margin-left: 2px" @click="handle2"> 收起菜单 </a-button>
             <a-button style="margin-left: 2px" @click="handle3"> 删除菜单 </a-button>
           </div>
           <div>
             <a-input-search style="margin-bottom: 8px" placeholder="Search" @change="onChange" />
             <a-tree
-                :selected-keys="selectedKeys"
+                selectable
                 :expanded-keys="expandedKeys"
                 :auto-expand-parent="autoExpandParent"
                 :tree-data="gData"
@@ -48,41 +48,124 @@
               </a-radio-button>
             </a-radio-group>
           </div>
+          <div v-if="buttonCheck === 'details'">
+            <a-form-model
+                    ref="form"
+                    :model="form"
+                    :rules="rules"
+                    :label-col="labelCol"
+                    :wrapper-col="wrapperCol"
+            >
+              <a-form-model-item label="项目名称" prop="name">
+                <a-input v-model="form.name"/>
+              </a-form-model-item>
+              <a-form-model-item label="创建人姓名" prop="ownerName">
+                <a-input v-model="form.ownerName"/>
+              </a-form-model-item>
+              <a-form-model-item label="Jira链接" prop="jira">
+                <a-input v-model="form.jira"/>
+              </a-form-model-item>
+              <a-form-model-item label="创建时间" prop="date">
+                <a-date-picker
+                        v-model="form.date"
+                        show-time
+                        type="date"
+                        placeholder="选择创建日期"
+                        style="width: 100%;"
+                />
+              </a-form-model-item>
+              <a-form-model-item label="其他备注" prop="desc">
+                <a-input v-model="form.desc" type="textarea" />
+              </a-form-model-item>
+              <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
+                <a-button type="primary" @click="onSubmit">
+                  Create
+                </a-button>
+                <a-button style="margin-left: 10px;" @click="resetForm">
+                  Reset
+                </a-button>
+              </a-form-model-item>
+            </a-form-model>
+          </div>
+          <div v-else>
+            <a-form layout="horizontal">
+              <div :class="advanced ? null: 'fold'">
+                <a-row >
+                  <a-col :md="8" :sm="24" >
+                    <a-form-item
+                            label="规则编号"
+                            :labelCol="{span: 5}"
+                            :wrapperCol="{span: 18, offset: 1}"
+                    >
+                      <a-input placeholder="请输入" />
+                    </a-form-item>
+                  </a-col>
+                  <a-col :md="8" :sm="24" >
+                    <a-form-item
+                            label="使用状态"
+                            :labelCol="{span: 5}"
+                            :wrapperCol="{span: 18, offset: 1}"
+                    >
+                      <a-select placeholder="请选择">
+                        <a-select-option value="1">关闭</a-select-option>
+                        <a-select-option value="2">运行中</a-select-option>
+                      </a-select>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :md="8" :sm="24" >
+                    <a-form-item
+                            label="调用次数"
+                            :labelCol="{span: 5}"
+                            :wrapperCol="{span: 18, offset: 1}"
+                    >
+                      <a-input-number style="width: 100%" placeholder="请输入" />
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+                <a-row v-if="advanced">
+                  <a-col :md="8" :sm="24" >
+                    <a-form-item
+                            label="更新日期"
+                            :labelCol="{span: 5}"
+                            :wrapperCol="{span: 18, offset: 1}"
+                    >
+                      <a-date-picker style="width: 100%" placeholder="请输入更新日期" />
+                    </a-form-item>
+                  </a-col>
+                  <a-col :md="8" :sm="24" >
+                    <a-form-item
+                            label="使用状态"
+                            :labelCol="{span: 5}"
+                            :wrapperCol="{span: 18, offset: 1}"
+                    >
+                      <a-select placeholder="请选择">
+                        <a-select-option value="1">关闭</a-select-option>
+                        <a-select-option value="2">运行中</a-select-option>
+                      </a-select>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :md="8" :sm="24" >
+                    <a-form-item
+                            label="描述"
+                            :labelCol="{span: 5}"
+                            :wrapperCol="{span: 18, offset: 1}"
+                    >
+                      <a-input placeholder="请输入" />
+                    </a-form-item>
+                  </a-col>
+                </a-row>
+              </div>
+              <span style="float: right; margin-top: 3px;">
+          <a-button type="primary">查询</a-button>
+          <a-button style="margin-left: 8px">重置</a-button>
+          <a @click="toggleAdvanced" style="margin-left: 8px">
+            {{advanced ? '收起' : '展开'}}
+            <a-icon :type="advanced ? 'up' : 'down'" />
+          </a>
+        </span>
+            </a-form>
+          </div>
 
-          <a-form-model
-              ref="form"
-              :model="form"
-              :rules="rules"
-              :label-col="labelCol"
-              :wrapper-col="wrapperCol"
-          >
-            <a-form-model-item label="项目名称" prop="name">
-              <a-input v-model="form.name"/>
-            </a-form-model-item>
-            <a-form-model-item ref="ownerName" label="创建人姓名">
-              <a-input v-model="form.ownerName"/>
-            </a-form-model-item>
-            <a-form-model-item label="Activity time" required prop="date1">
-              <a-date-picker
-                  v-model="form.date"
-                  show-time
-                  type="date"
-                  placeholder="Pick a date"
-                  style="width: 100%;"
-              />
-            </a-form-model-item>
-            <a-form-model-item label="Activity form" prop="desc">
-              <a-input v-model="form.desc" type="textarea" />
-            </a-form-model-item>
-            <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
-              <a-button type="primary" @click="onSubmit">
-                Create
-              </a-button>
-              <a-button style="margin-left: 10px;" @click="resetForm">
-                Reset
-              </a-button>
-            </a-form-model-item>
-          </a-form-model>
         </a-card>
       </a-col>
     </a-row>
@@ -104,6 +187,7 @@
         {
           title: '0-0-0',
           key: '0-0-0',
+          scopedSlots: { title: 'title' },
           children: [
             { title: '0-0-0-0', key: '0-0-0-0',scopedSlots: { title: 'title' } },
             { title: '0-0-0-1', key: '0-0-0-1',scopedSlots: { title: 'title' } },
@@ -170,15 +254,17 @@
           name: '',
           ownerName: '',
           jira: '',
-          date: ''
+          date: '',
+          desc: ''
         },
         rules: {
           name: [{ required: true, message: '请输入待测项目名称', trigger: 'blur' }],
           ownerName: [{required: true, message: '请输入创建人姓名', trigger: 'blur' }],
-          jira: [{required: true, message: '请输入项目jira链接', trigger: 'blur' }]
+          jira: [{required: true, message: '请输入项目jira链接', trigger: 'blur' }],
+          date:[{required:true,message:'请输入创建时间',trigger:'blur'}]
         },
-        labelCol: { span: 4 },
-        wrapperCol: { span: 14 },
+        labelCol: { span: 5 },
+        wrapperCol: { span: 12 },
       };
     },
     methods:{
