@@ -1,5 +1,5 @@
-import {request, METHOD} from "../utils/request";
-import {DEVICE} from "../services/api";
+import {request, METHOD} from "@/utils/request";
+import {DEVICE} from "@/services/api";
 
 /**
  * device信息获取
