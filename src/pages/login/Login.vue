@@ -5,12 +5,12 @@
         <img alt="logo" class="logo" src="@/assets/img/logo.png" />
         <span class="title">{{systemName}}</span>
       </div>
-      <div class="desc">Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+      <div class="desc">请输入邮箱前缀和密码信息</div>
     </div>
     <div class="login">
       <a-form @submit="onSubmit" :form="form">
         <a-tabs size="large" :tabBarStyle="{textAlign: 'center'}" style="padding: 0 2px;">
-          <a-tab-pane tab="账户密码登录" key="1">
+          <a-tab-pane tab="邮箱前缀登录" key="1">
             <a-alert type="error" :closable="true" v-if="error" :message="error" @close='onClose' showIcon style="margin-bottom: 24px;" />
             <a-form-item>
               <a-input
@@ -62,10 +62,6 @@
           <a-button :loading="logging" style="width: 100%;margin-top: 24px" size="large" htmlType="submit" type="primary">登录</a-button>
         </a-form-item>
         <div>
-          其他登录方式
-          <a-icon class="icon" type="alipay-circle" />
-          <a-icon class="icon" type="taobao-circle" />
-          <a-icon class="icon" type="weibo-circle" />
           <router-link style="float: right" to="/dashboard/workplace" >注册账户</router-link>
         </div>
       </a-form>

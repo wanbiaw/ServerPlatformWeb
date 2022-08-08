@@ -183,15 +183,17 @@
       getDevice(data).then(res => {
         let source = res.data;
         console.log(source[1]);
-        for (let i = 0; i < source.length;i++){
-          dataSource.push({
-            key: i,
-            id: source[i].id,
-            appId: source[i].appId,
-            app: source[i].app,
-            status: source[i].isMonitor,
-            updatedAt: source[i].updatedAt
-          })
+        if (dataSource.length<1){
+          for (let i = 0; i < source.length;i++){
+            dataSource.push({
+              key: i,
+              id: source[i].id,
+              appId: source[i].appId,
+              app: source[i].app,
+              status: source[i].isMonitor,
+              updatedAt: source[i].updatedAt
+            })
+          }
         }
       });
     },

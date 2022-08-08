@@ -6,5 +6,6 @@ module.exports = {
   LOGIN: `${BASE_URL}/login`,
   ROUTES: `${BASE_URL}/routes`,
 
-  DEVICE: `${BASE_URL}/getDevices`
+  DEVICE: `${BASE_URL}/getDevices`,
+  HTTP_MOCK: `${BASE_URL}/getHttpMocks`
 }

@@ -36,7 +36,7 @@ const options = {
         },
         {
           path: 'nlp',
-          name: '中控接口',
+          name: '服务端用例',
           meta: {
             icon: 'dashboard',
           },
@@ -61,6 +61,21 @@ const options = {
               path: 'demo2',
               name: '演示页面2',
               component: () => import('@/pages/device'),
+            }
+          ]
+        },
+        {
+          path: 'mock',
+          name: 'mock配置',
+          meta: {
+            icon: 'form'
+          },
+          component: BlankView,
+          children: [
+            {
+              path: 'httpMock',
+              name: 'HttpMock',
+              component: () => import('@/pages/mock'),
             }
           ]
         },
