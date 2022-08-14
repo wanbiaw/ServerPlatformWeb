@@ -1,5 +1,5 @@
 import {request,METHOD} from "@/utils/request";
-import {HTTP_MOCK} from "@/services/api"
+import {GET_HTTP_MOCK,SAVE_HTTP_MOCK} from "@/services/api"
 
 /**
  * HttpMock信息获取
@@ -7,7 +7,11 @@ import {HTTP_MOCK} from "@/services/api"
  * @param params
  */
 export async function getHttpMock(params) {
-    return request(HTTP_MOCK, METHOD.GET, params)
+    return request(GET_HTTP_MOCK, METHOD.GET, params)
+}
+
+export async function saveHttpMock(params) {
+    return request(SAVE_HTTP_MOCK, METHOD.POST,params)
 }
 
 export default {}
