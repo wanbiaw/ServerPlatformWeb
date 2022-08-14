@@ -7,5 +7,6 @@ module.exports = {
   ROUTES: `${BASE_URL}/routes`,
 
   DEVICE: `${BASE_URL}/getDevices`,
-  HTTP_MOCK: `${BASE_URL}/getHttpMocks`
+  GET_HTTP_MOCK: `${BASE_URL}/getHttpMocks`,
+  SAVE_HTTP_MOCK: `${BASE_URL}/saveHttpMock`
 }

@@ -122,6 +122,7 @@ export default {
 .standard-table{
   .alert{
     margin-bottom: 16px;
+    margin-top: 10px;
     .message{
       a{
         font-weight: 600;
