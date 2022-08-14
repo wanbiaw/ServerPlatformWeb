@@ -79,7 +79,7 @@
         <div>
             <a-space class="operator">
                 <a-button @click="addMock('add')" type="primary">新建</a-button>
-                <a-button @click="delMocks()">批量删除</a-button>
+                <a-button @click="delMocks">批量删除</a-button>
 <!--                <a-dropdown>-->
 <!--                    <a-menu @click="handleMenuClick" slot="overlay">-->
 <!--                        <a-menu-item key="delete">删除</a-menu-item>-->
@@ -107,7 +107,7 @@
                     <a style="margin-right: 8px" @click="editMock(record.key,'edit')">
                         <a-icon type="edit"/>编辑
                     </a>
-                    <a @click="deleteRecord(record.key)">
+                    <a @click="deleteRecord(record.id)">
                         <a-icon type="delete" />删除
                     </a>
 <!--                    <a @click="deleteRecord(record.key)" v-auth="`delete`">-->
@@ -128,7 +128,7 @@
 
 <script>
     import StandardTable from '@/components/table/StandardTable'
-    import {getHttpMock} from "@/services/mock";
+    import {getHttpMock,delHttpMock} from "@/services/mock";
     import AddOrUpdate from "@/pages/mock/addOrUpdate";
     const columns = [
         {
@@ -206,30 +206,49 @@
                             response:source[i].response,
                             status:source[i].status,
                             delay:source[i].delay,
-                            createdAt: source[i].createdAt,
-                            updatedAt: source[i].updatedAt
+                            createdAt: new Date(+new Date(source[i].createdAt)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,''),
+                            updatedAt: new Date(+new Date(source[i].updatedAt)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'')
                         })
                     }
                 }
             });
         },
-        authorize: {
-            deleteRecord: 'delete'
-        },
+        // authorize: {
+        //     deleteRecord: 'delete'
+        // },
         methods: {
             onsubmit(){
-                console.log(this.form);
-                console.log(this.form.getFieldValue("name"));
-                this.form.validateFields((err,values) => {
-                    console.log(err);
-                    if (err){
-                        console.log(values);
-                    }
-                });
                 // console.log(this.form);
-                // getHttpMock(this.form).then(res => {
-                //     console.log(res);
-                // })
+                // console.log(this.form.getFieldValue("name"));
+                // console.log(this.form.getFieldValue("createdAt"));
+                this.form.validateFields((error, values) => {
+                  console.log('error', error);
+                  console.log('Received values of form: ', values);
+                  getHttpMock(values).then(res => {
+                      let source = res.data;
+                      this.dataSource = [];
+                      for (let i = 0; i < source.length;i++){
+                        this.dataSource.push({
+                          key: i,
+                          id: source[i].id,
+                          uuid:source[i].uuid,
+                          name: source[i].name,
+                          url: source[i].url,
+                          header:source[i].header,
+                          param:source[i].param,
+                          requestMethod: source[i].requestMethod,
+                          requestData:source[i].requestData,
+                          response:source[i].response,
+                          status:source[i].status,
+                          delay:source[i].delay,
+                          createdAt: new Date(+new Date(source[i].createdAt)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,''),
+                          updatedAt: new Date(+new Date(source[i].updatedAt)+8*3600*1000).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'')
+                        })
+                      }
+                      console.log(this.dataSource);
+                  })
+                });
+
             },
             editMock(key,type){
                 this.$nextTick(() =>{
@@ -237,8 +256,11 @@
                 })
             },
             deleteRecord(key) {
-                this.dataSource = this.dataSource.filter(item => item.key !== key)
-                this.selectedRows = this.selectedRows.filter(item => item.key !== key)
+                // this.dataSource = this.dataSource.filter(item => item.key !== key)
+                // this.selectedRows = this.selectedRows.filter(item => item.key !== key)
+                let data = [];
+                data.push(key);
+                delHttpMock(data).then(this.$message.info("已删除该项!"));
             },
             toggleAdvanced () {
                 this.advanced = !this.advanced
@@ -271,6 +293,12 @@
                 //     status: Math.floor(Math.random() * 10) % 4,
                 //     updatedAt: '2018-07-26'
                 // })
+            },
+            delMocks(){
+                console.log(this.selectedRows);
+                let data = [];
+                this.selectedRows.forEach(res =>data.push(res.id));
+                delHttpMock(data).then(this.$message.info("已删除所选项"));
             },
             handleMenuClick (e) {
                 if (e.key === 'delete') {
